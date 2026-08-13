@@ -1,5 +1,3 @@
-# multi-omics-plms
-CFDE Multi-Omics and Protein Language Models
 # From Sequence to Variant: Protein Language Models on CFDE Data
 
 A [CFDE Training Center](https://www.orau.org/cfde-trainingcenter/training/e-learning.html) community-sourced training module connecting **MoTrPAC** (exercise multi-omics) and **GTEx** (expression quantitative trait loci) through the **ESM2** protein language model.
@@ -21,9 +19,9 @@ This notebook walks learners through an end-to-end machine learning workflow con
 2. **GTEx** (Genotype-Tissue Expression) — retrieve expression quantitative trait loci (eQTLs), the regulatory genetic variants that control those same genes' expression
 3. **ESM2** (a pre-trained protein language model) — embed protein sequences, fine-tune a classifier to predict exercise-responsiveness from sequence alone, then ask whether the sequence positions driving the model's predictions correspond to positions where GTEx has already found real genetic variation
 
-**The core scientific question:** *Is exercise-responsiveness encoded in protein sequence and do the sequence signatures a language model learns correspond to positions where natural genetic variation exists?*
+**The core scientific question:** *Is exercise-responsiveness encoded in protein sequence — and do the sequence signatures a language model learns correspond to positions where natural genetic variation exists?*
 
-This workflow can be extended to any CFDE perturbation dataset with a labeled phenotype outcome.
+This workflow is not exercise-specific — it generalizes to any CFDE perturbation dataset with a labeled phenotype outcome.
 
 ## Module structure
 
@@ -36,7 +34,8 @@ This workflow can be extended to any CFDE perturbation dataset with a labeled ph
 | 4 | Cross-reference model-highlighted sequence positions against GTEx eQTLs | ~25 min |
 | 5 | Wrap-up, post-module knowledge check, reflection prompt | ~5 min |
 
-Each part includes inline concept checks, data/coding checkpoints, and commented code cells written for readers with different programming backgrounds.
+Each part includes inline concept checks, data/coding checkpoints, and heavily commented code cells written for readers without a heavy programming background.
+
 ## Getting started
 
 **Option 1 — Google Colab (recommended, no setup required):**
@@ -62,7 +61,7 @@ No GPU or institutional compute cluster is required — ESM2's smallest checkpoi
 | [Ensembl](https://rest.ensembl.org/) REST API | Public, no login | Public domain |
 | [ESM2](https://github.com/facebookresearch/esm) (`esm2_t6_8M_UR50D`) | Open weights, downloaded automatically via `fair-esm` | MIT License |
 
-All data retrieval happens live in the notebook and no data files are bundled in this repository.
+All data retrieval happens live in the notebook — no data files are bundled in this repository.
 
 ## Example results (from a full run)
 
@@ -73,17 +72,18 @@ Using liver tissue, 8-week endurance-trained vs. sedentary comparison:
 - 13 / 49 orthologous genes had significant GTEx liver eQTLs
 - 27 genes had usable rat protein sequences and were embedded with ESM2
 - Logistic regression classifier: **AUROC 0.75** on held-out test genes
-- Cross-reference example (gene *LIG1*): 0/10 GTEx eQTLs exactly matched a model-highlighted coding position; closest eQTL was 1,005 bp away
+- Cross-reference, aggregated across all 7 genes with valid eQTL coverage and an ESM2 embedding: **4/7 genes (57%) had at least one eQTL within 5,000 bp of a model-highlighted position** (exact coding-sequence matches were 0/7, as expected — eQTLs are predominantly regulatory/non-coding)
 
-These numbers are illustrative of the workflow, not a validated biological finding and sample sizes at every stage are small by design, to keep the module runnable in a short amount of time without institutional compute.
+These numbers are illustrative of the workflow, not a validated biological finding — sample sizes at every stage are small by design, to keep the module runnable in ~2.5 hours without institutional compute.
 
 ## Known limitations
 
 - **Gene set size:** capped at the top 75 exercise-responsive genes (by effect size) for runtime reasons; a full analysis would use all significant genes across all tissues/timepoints.
 - **Significance threshold:** uses nominal (unadjusted) p-values rather than multiple-testing-corrected p-values, to yield a workable gene set for a teaching example. See inline notebook comments for the full rationale.
-- **Small sample size:** the fine-tuning classifier trains on ~20 examples and tests on ~7 so the results are meant to show proof of concept and are not statistically robust.
+- **Small sample size:** the fine-tuning classifier trains on ~20 examples and tests on ~7 — results are directional, not statistically robust.
 - **Single tissue/timepoint:** results are specific to liver at the 8-week training timepoint and should not be generalized to other tissues without re-running the pipeline.
-- **Part 4 cross-reference is capped at 15 positions per live run** for demo speed (Ensembl's REST API has real per-request latency); the notebook's saved outputs reflect a full uncapped run.
+- **Part 4 cross-reference is capped at 10–15 positions per gene** for runtime reasons (each position requires its own Ensembl API request); this is a real constraint on the saved results, not just a live-demo simplification — see inline notebook comments for the exact caps used.
+- **One gene's eQTL count is undercounted:** CPNE1 shows exactly 500 eQTLs in the results, matching the API's page-size cap used in this run — the true count is likely higher, and this makes CPNE1's closest-distance result (94 bp) less reliable than the other genes' (more eQTLs queried = higher chance of a small minimum distance by chance alone). The aggregate 4/7 statistic does not depend on this number and is unaffected.
 
 ## Repository contents
 
@@ -95,7 +95,7 @@ These numbers are illustrative of the workflow, not a validated biological findi
 
 ## Acknowledgments
 
-Developed for the CFDE Training Center's community-sourced training module program. Built on open-access data from the MoTrPAC and GTEx Data Coordinating Centers.
+Developed for the CFDE Training Center's community-sourced training module program, with guidance from Allissa Dillman and Laurel Steinfield (CFDE Training Center). Built on open-access data from the MoTrPAC and GTEx Data Coordinating Centers.
 
 ## License
 
