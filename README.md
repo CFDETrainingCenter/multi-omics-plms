@@ -1,5 +1,7 @@
 # From Sequence to Variant: Protein Language Models on CFDE Data
 
+# From Sequence to Variant: Protein Language Models on CFDE Data
+
 A [CFDE Training Center](https://www.orau.org/cfde-trainingcenter/training/e-learning.html) community-sourced training module connecting **MoTrPAC** (exercise multi-omics) and **GTEx** (expression quantitative trait loci) through the **ESM2** protein language model.
 
 **Author:** Saba Nafees, Ph.D.
@@ -83,7 +85,9 @@ These numbers are illustrative of the workflow, not a validated biological findi
 - **Small sample size:** the fine-tuning classifier trains on ~20 examples and tests on ~7 — results are directional, not statistically robust.
 - **Single tissue/timepoint:** results are specific to liver at the 8-week training timepoint and should not be generalized to other tissues without re-running the pipeline.
 - **Part 4 cross-reference is capped at 10–15 positions per gene** for runtime reasons (each position requires its own Ensembl API request); this is a real constraint on the saved results, not just a live-demo simplification — see inline notebook comments for the exact caps used.
-- **One gene's eQTL count is undercounted:** CPNE1 shows exactly 500 eQTLs in the results, matching the API's page-size cap used in this run — the true count is likely higher, and this makes CPNE1's closest-distance result (94 bp) less reliable than the other genes' (more eQTLs queried = higher chance of a small minimum distance by chance alone). The aggregate 4/7 statistic does not depend on this number and is unaffected.
+- **One gene had a much larger real eQTL count than initially shown:** CPNE1's results table initially showed exactly 500 eQTLs, matching the API's page-size cap used in that run. Following up with GTEx's pagination metadata confirmed the true count is **709**. Re-checking the closest-distance calculation against the full 709 (not just the first 500) still gives 94 bp, the number itself holds up. The remaining caveat is interpretive, not numerical: CPNE1 was tested against far more eQTLs than most other genes in the aggregate (709 vs., e.g., GP5's 6), so a close result there is statistically less surprising by chance alone than an equally close result from a gene with few eQTLs. The aggregate 4/7 statistic does not depend on this number and is unaffected.
+
+## Repository contents
 
 ## Repository contents
 
