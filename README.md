@@ -148,10 +148,11 @@ Residue — a single amino acid unit within a protein sequence; "residue positio
 
 ```
 .
-├── From_Sequence_to_Variant_PLMs_on_CFDE_Data.ipynb   # the training module notebook
-└── README.md                                           # this file
+├── From_Sequence_to_Variant_PLMs_on_CFDE_Data_UPDATED.ipynb   # the training module notebook
+├── workflow_narrative.md                                       # narrative summary (markdown version)
+├── workflow_narrative.pdf                                      # narrative summary (PDF version)
+└── README.md                                                   # this file
 ```
-
 ## Acknowledgments
 
 Developed for the CFDE Training Center's community-sourced training module program, with guidance from Allissa Dillman and Laurel Steinfield (CFDE Training Center). Built on open-access data from the MoTrPAC and GTEx Data Coordinating Centers.
