@@ -77,13 +77,14 @@ Cross-reference, aggregated across all 7 genes with valid eQTL coverage and an E
 
 These numbers are illustrative of the workflow, not a validated biological finding — sample sizes at every stage are small by design, to keep the module runnable in ~2.5 hours without institutional compute.
 
-Known limitations
-Gene set size: capped at the top 75 exercise-responsive genes (by effect size) for runtime reasons; a full analysis would use all significant genes across all tissues/timepoints.
-Significance threshold: uses nominal (unadjusted) p-values rather than multiple-testing-corrected p-values, to yield a workable gene set for a teaching example. See inline notebook comments for the full rationale.
-Small sample size: the fine-tuning classifier trains on ~20 examples and tests on ~7 — results are directional, not statistically robust.
-Single tissue/timepoint: results are specific to liver at the 8-week training timepoint and should not be generalized to other tissues without re-running the pipeline.
-Part 4 cross-reference is capped at 10–15 positions per gene for runtime reasons (each position requires its own Ensembl API request); this is a real constraint on the saved results, not just a live-demo simplification — see inline notebook comments for the exact caps used.
-One gene had a much larger real eQTL count than initially shown: CPNE1's results table initially showed exactly 500 eQTLs, matching the API's page-size cap used in that run. Following up with GTEx's pagination metadata confirmed the true count is 709. Re-checking the closest-distance calculation against the full 709 (not just the first 500) still gives 94 bp — the number itself holds up. The remaining caveat is interpretive, not numerical: CPNE1 was tested against far more eQTLs than most other genes in the aggregate (709 vs., e.g., GP5's 6), so a close result there is statistically less surprising by chance alone than an equally close result from a gene with few eQTLs. The aggregate 4/7 statistic does not depend on this number and is unaffected.
+## Known limitations
+
+- **Gene set size:** capped at the top 75 exercise-responsive genes (by effect size) for runtime reasons; a full analysis would use all significant genes across all tissues/timepoints.
+- **Significance threshold:** uses nominal (unadjusted) p-values rather than multiple-testing-corrected p-values, to yield a workable gene set for a teaching example. See inline notebook comments for the full rationale.
+- **Small sample size:** the fine-tuning classifier trains on ~20 examples and tests on ~7 — results are directional, not statistically robust.
+- **Single tissue/timepoint:** results are specific to liver at the 8-week training timepoint and should not be generalized to other tissues without re-running the pipeline.
+- **Part 4 cross-reference is capped at 10–15 positions per gene** for runtime reasons (each position requires its own Ensembl API request); this is a real constraint on the saved results, not just a live-demo simplification — see inline notebook comments for the exact caps used.
+- **One gene had a much larger real eQTL count than initially shown:** CPNE1's results table initially showed exactly 500 eQTLs, matching the API's page-size cap used in that run. Following up with GTEx's pagination metadata confirmed the true count is **709**. Re-checking the closest-distance calculation against the full 709 (not just the first 500) still gives 94 bp — the number itself holds up. The remaining caveat is interpretive, not numerical: CPNE1 was tested against far more eQTLs than most other genes in the aggregate (709 vs., e.g., GP5's 6), so a close result there is statistically less surprising by chance alone than an equally close result from a gene with few eQTLs. The aggregate 4/7 statistic does not depend on this number and is unaffected.
 
 ## Glossary
 
@@ -138,7 +139,6 @@ Sequence alignment — lining up two sequences (here, a rat and a human version 
 BLOSUM62 — a standard scoring table used during sequence alignment, indicating how "similar" different amino acid substitutions are (e.g. two chemically similar amino acids score higher than two very different ones).
 
 Residue — a single amino acid unit within a protein sequence; "residue position 50" means the 50th amino acid in the sequence.
-
 
 ## Repository contents
 
