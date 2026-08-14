@@ -1,7 +1,5 @@
 # From Sequence to Variant: Protein Language Models on CFDE Data
 
-# From Sequence to Variant: Protein Language Models on CFDE Data
-
 A [CFDE Training Center](https://www.orau.org/cfde-trainingcenter/training/e-learning.html) community-sourced training module connecting **MoTrPAC** (exercise multi-omics) and **GTEx** (expression quantitative trait loci) through the **ESM2** protein language model.
 
 **Author:** Saba Nafees, Ph.D.
