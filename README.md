@@ -9,7 +9,9 @@ A [CFDE Training Center](https://www.orau.org/cfde-trainingcenter/training/e-lea
 **Level:** Intermediate — working Python familiarity, basic biology background, no prior deep learning experience required
 **Estimated completion time:** ~2.5 hours
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CFDETrainingCenter/multi-omics-plms/blob/main/From_Sequence_to_Variant_PLMs_on_CFDE_Data.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CFDETrainingCenter/multi-omics-plms/blob/main/From_Sequence_to_Variant_PLMs_on_CFDE_Data_UPDATED.ipynb)
+
+**Slides:** [View presentation](https://docs.google.com/presentation/d/1UsSOS1zQ0F5G_REfiG-qufJh5_lTXjeBKdd2-oLfsb0/edit?usp=sharing)
 
 ---
 
@@ -64,18 +66,19 @@ No GPU or institutional compute cluster is required — ESM2's smallest checkpoi
 | [ESM2](https://github.com/facebookresearch/esm) (`esm2_t6_8M_UR50D`) | Open weights, downloaded automatically via `fair-esm` | MIT License |
 
 All data retrieval happens live in the notebook — no data files are bundled in this repository.
-Example results (from a full run)
+## Example results (from a full run)
 
 Using liver tissue, 8-week endurance-trained vs. sedentary comparison:
 
-75 exercise-responsive genes identified in MoTrPAC (nominal p < 0.05)
-49 / 75 genes had a known rat→human ortholog
-13 / 49 orthologous genes had significant GTEx liver eQTLs
-27 genes had usable rat protein sequences and were embedded with ESM2
-Logistic regression classifier: AUROC 0.75 on held-out test genes
-Cross-reference, aggregated across all 7 genes with valid eQTL coverage and an ESM2 embedding: 4/7 genes (57%) had at least one eQTL within 5,000 bp of a model-highlighted position (exact coding-sequence matches were 0/7, as expected — eQTLs are predominantly regulatory/non-coding)
+- 75 exercise-responsive genes identified in MoTrPAC (nominal p < 0.05)
+- 49 / 75 genes had a known rat to human ortholog
+- 13 / 49 orthologous genes had significant GTEx liver eQTLs
+- 57 / 74 genes had usable rat protein sequences and were embedded with ESM2 (27 from UniProt's manually curated "reviewed" entries, 30 from lower confidence automatically predicted "unreviewed" entries, see the Glossary below)
+- Logistic regression classifier: **AUROC 0.607** on held-out test genes (42 train / 15 test); a small neural network scored **AUROC 0.643** on the same split
+- Cross-reference, aggregated across 7 genes with valid eQTL coverage and an ESM2 embedding: **4/7 genes (57%) had at least one eQTL within 5,000 bp of a model-highlighted position** (exact coding-sequence matches were 0/7, as expected, eQTLs are predominantly regulatory/non-coding). This aggregate reflects an earlier, smaller run (27 embedded genes); it has not been recomputed against the full 57-gene set.
+- Addendum check comparing transcript-level and protein-level responsiveness calls for the same tissue and timepoint: 2,593 genes responsive by transcriptomics, 2,917 by proteomics, only 679 responsive by both (about 26% of transcript-responsive genes and 23% of protein-responsive genes overlap with the other layer)
 
-These numbers are illustrative of the workflow, not a validated biological finding — sample sizes at every stage are small by design, to keep the module runnable in ~2.5 hours without institutional compute.
+These numbers are illustrative of the workflow, not a validated biological finding, sample sizes at every stage are small by design, to keep the module runnable in ~2.5 hours without institutional compute.
 
 ## Known limitations
 
@@ -85,6 +88,7 @@ These numbers are illustrative of the workflow, not a validated biological findi
 - **Single tissue/timepoint:** results are specific to liver at the 8-week training timepoint and should not be generalized to other tissues without re-running the pipeline.
 - **Part 4 cross-reference is capped at 10–15 positions per gene** for runtime reasons (each position requires its own Ensembl API request); this is a real constraint on the saved results, not just a live-demo simplification — see inline notebook comments for the exact caps used.
 - **One gene had a much larger real eQTL count than initially shown:** CPNE1's results table initially showed exactly 500 eQTLs, matching the API's page-size cap used in that run. Following up with GTEx's pagination metadata confirmed the true count is **709**. Re-checking the closest-distance calculation against the full 709 (not just the first 500) still gives 94 bp — the number itself holds up. The remaining caveat is interpretive, not numerical: CPNE1 was tested against far more eQTLs than most other genes in the aggregate (709 vs., e.g., GP5's 6), so a close result there is statistically less surprising by chance alone than an equally close result from a gene with few eQTLs. The aggregate 4/7 statistic does not depend on this number and is unaffected.
+- **Transcriptomics and proteomics responsiveness calls disagree substantially.** A companion check (last part of the notebook) compared MoTrPAC's transcript-level and protein-level "responsive" gene calls for the same tissue and timepoint: only ~23-26% of genes flagged as responsive by one layer are also flagged by the other. Since this module defines "exercise-responsive" using transcriptomics but models *protein* sequence with ESM2, this can be a limitation; the classifier's label and its input come from two only weakly-agreeing molecular layers.
 
 ## Glossary
 
