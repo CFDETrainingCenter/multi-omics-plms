@@ -114,6 +114,10 @@ Protein language model — a machine learning model trained on large numbers of 
 
 ESM2 — the specific protein language model used in this notebook (Evolutionary Scale Modeling, version 2), developed by Meta AI. Available in several sizes; this notebook uses the smallest (esm2_t6_8M_UR50D, 8 million parameters) so it runs quickly on a standard CPU.
 
+Open weights - "Weights" are the millions of learned numbers inside a trained model, the actual result of its training process. "Open weights" means these numbers are freely downloadable by anyone, with no application or approval process, as opposed to models only accessible through a paid API or after a review process. This matters for a training module meant to run in anyone's Colab session without setup friction.
+
+Checkpoints - ESM2 is released as several **checkpoints**, a checkpoint is one specific, saved, trained version of a model, ready to be loaded and used as-is, as opposed to an abstract model architecture. ESM2's checkpoints range from 8 million to 15 billion parameters, all trained the same way and sharing the same interface. This lets a module like this one use the smallest checkpoint for speed on a free Colab CPU, while anyone wanting more accuracy can swap in a larger ESM2 checkpoint without changing any other code.
+
 Embedding — a list of numbers produced by a model to represent something (a protein, a word, an image) in a way that captures its meaningful properties. Similar proteins tend to have similar embeddings. The specific number of values in an embedding (its "dimension") is fixed by the model's architecture — ESM2's smallest checkpoint produces 320-number embeddings; larger ESM2 checkpoints produce wider embeddings (up to 2,560 for the largest).
 
 Fine-tuning — starting from an already-trained model (like ESM2, pre-trained on millions of unlabeled protein sequences) and adapting it, or training something on top of it, using a smaller labeled dataset for a specific task. Different from training a model from scratch.
@@ -141,6 +145,27 @@ Sequence alignment — lining up two sequences (here, a rat and a human version 
 BLOSUM62 — a standard scoring table used during sequence alignment, indicating how "similar" different amino acid substitutions are (e.g. two chemically similar amino acids score higher than two very different ones).
 
 Residue — a single amino acid unit within a protein sequence; "residue position 50" means the 50th amino acid in the sequence.
+
+---
+## References and Further Reading
+
+**Protein language models**
+- Lin, Z. et al. (2023). Evolutionary-scale prediction of atomic-level protein structure with a
+  language model. *Science*, 379(6637), 1123-1130.
+  [https://www.science.org/doi/10.1126/science.ade2574](https://www.science.org/doi/10.1126/science.ade2574)
+- ESM2 code and pretrained weights:
+  [https://github.com/facebookresearch/esm](https://github.com/facebookresearch/esm)
+
+**Machine learning concepts used in this module**
+- Embeddings: [Google ML Crash Course, Embeddings module](https://developers.google.com/machine-learning/crash-course/embeddings)
+- Logistic regression: [Google ML Crash Course, Logistic Regression module](https://developers.google.com/machine-learning/crash-course/logistic-regression)
+- ROC curves and AUROC: [Google ML Crash Course, Classification module](https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc)
+
+**CFDE data resources used in this module**
+- MoTrPAC data portal: [https://motrpac-data.org/data-download](https://motrpac-data.org/data-download)
+- GTEx portal: [https://gtexportal.org/home](https://gtexportal.org/home)
+- UniProt: [https://www.uniprot.org/help/about](https://www.uniprot.org/help/about)
+- Ensembl REST API documentation: [https://rest.ensembl.org/](https://rest.ensembl.org/)
 
 ## Repository contents
 
