@@ -7,7 +7,7 @@ A [CFDE Training Center](https://www.orau.org/cfde-trainingcenter/training/e-lea
 **Level:** Intermediate — working Python familiarity, basic biology background, no prior deep learning experience required
 **Estimated completion time:** ~2.5 hours
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CFDETrainingCenter/multi-omics-plms/blob/main/From_Sequence_to_Variant_PLMs_on_CFDE_Data_UPDATED.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/CFDETrainingCenter/multi-omics-plms/blob/main/From_Sequence_to_Variant_PLMs_on_CFDE_Data.ipynb)
 
 **Slides:** [View presentation](https://docs.google.com/presentation/d/1UsSOS1zQ0F5G_REfiG-qufJh5_lTXjeBKdd2-oLfsb0/edit?usp=sharing)
 
@@ -27,16 +27,21 @@ This workflow is not exercise-specific — it generalizes to any CFDE perturbati
 
 ## Module structure
 
-| Part | Content | Runtime |
-|---|---|---|
-| 0 | CFDE / MoTrPAC / GTEx orientation + pre-module knowledge check | ~10 min |
-| 1 | How protein language models encode sequence (concept only) | ~25 min |
-| 2 | Retrieve & integrate MoTrPAC + GTEx data | ~30 min |
-| 3 | Fine-tune ESM2 for exercise-responsiveness prediction | ~45 min |
-| 4 | Cross-reference model-highlighted sequence positions against GTEx eQTLs | ~25 min |
-| 5 | Wrap-up, post-module knowledge check, reflection prompt | ~5 min |
+The chapter-by-chapter version should be completed in order because later chapters use variables and outputs created earlier. **If you are running the module in Google Colab, use the [complete compiled notebook](https://colab.research.google.com/github/CFDETrainingCenter/multi-omics-plms/blob/main/From_Sequence_to_Variant_PLMs_on_CFDE_Data.ipynb) instead.**
 
-Each part includes inline concept checks, data/coding checkpoints, and heavily commented code cells written for readers without a heavy programming background.
+| Chapter | Content |
+|---|---|
+| 1 | [Getting Started](chapters/01_getting_started.ipynb) |
+| 2 | [CFDE / MoTrPAC / GTEx Orientation](chapters/02_cfde_motrpac_gtex_orientation.ipynb) |
+| 3 | [How Protein Language Models Encode Sequence](chapters/03_how_protein_language_models_encode_sequence.ipynb) |
+| 4 | [Retrieve and Integrate MoTrPAC + GTEx Data](chapters/04_retrieve_and_integrate_motrpac_gtex_data.ipynb) |
+| 5 | [Fine-Tune ESM2 for Exercise-Responsiveness Prediction](chapters/05_fine_tune_esm2_for_exercise_responsiveness_prediction.ipynb) |
+| 6 | [Cross-Reference Model-Highlighted Sequence Positions Against GTEx eQTLs](chapters/06_cross_reference_model_highlighted_positions_against_gtex_eqtls.ipynb) |
+| 7 | [Do Transcript-Level and Protein-Level Responsiveness Agree?](chapters/07_transcript_level_and_protein_level_responsiveness.ipynb) |
+| 8 | [Wrap-up](chapters/08_wrap_up.ipynb) |
+| 9 | [Post-Module Knowledge Check](chapters/09_post_module_knowledge_check.ipynb) |
+
+Each chapter includes inline concept checks, data/coding checkpoints, and heavily commented code cells written for readers without a heavy programming background.
 
 ## Getting started
 
@@ -90,63 +95,63 @@ These numbers are illustrative of the workflow, not a validated biological findi
 
 ## Glossary
 
-Terms are defined here in plain language, in the order a reader is likely to encounter them. Terms used only once and defined inline in the notebook aren't repeated here.
-
-CFDE (Common Fund Data Ecosystem) — an NIH initiative connecting data generated across separate NIH Common Fund research programs, each run by its own Data Coordinating Center (DCC), so researchers can ask questions that span multiple programs' data.
-
-Data Coordinating Center (DCC) — the organization responsible for collecting, curating, and distributing data for one NIH Common Fund program. MoTrPAC and GTEx are each run by their own DCC.
-
-Transcriptomics — measurement of RNA (gene expression) transcript/read levels, typically via RNA sequencing, a proxy of how much a gene is "turned on".
-
-Proteomics — measurement of protein abundance, typically via mass spectrometry. Tells you how much of the actual protein product is present. RNA and protein levels don't always move together (see "Known limitations" above).
-
-Differential analysis (DA) — a statistical comparison of measurements (expression, protein abundance, etc.) between two conditions (e.g. exercise-trained vs. sedentary), producing a significance value and an effect size for each gene.
-
-Log fold-change (logFC) — the size and direction of a change between two conditions, on a logarithmic scale. Positive = increased in the trained group; negative = decreased. This notebook uses the absolute value of logFC to define "responsive," since both increases and decreases count as a response.
-
-p-value — the probability of seeing a result at least this extreme purely by chance, if there were truly no real effect. Lower = more statistically confident the effect is real.
+Terms are defined here in plain language and listed alphabetically. Terms used only once and defined inline in the notebook aren't repeated here.
 
 Adjusted p-value / FDR correction — a stricter version of the p-value that accounts for testing many genes at once (multiple-testing correction). Necessary for rigorous research claims, but often leaves very few "significant" results when applied to thousands of simultaneous tests on a small, teaching-scale dataset — see "Known limitations" above for why this notebook uses nominal (unadjusted) p-values instead.
 
-Ortholog — a gene in one species that evolved from the same ancestral gene as a gene in another species, and typically performs the same or a very similar function. Used here to translate rat genes to their human equivalents, since GTEx only has human data.
-
-Protein language model — a machine learning model trained on large numbers of protein sequences to predict masked amino acids from context, the same way text language models predict masked words. In doing so, it implicitly learns which amino acid substitutions are typically tolerated at each position.
-
-ESM2 — the specific protein language model used in this notebook (Evolutionary Scale Modeling, version 2), developed by Meta AI. Available in several sizes; this notebook uses the smallest (esm2_t6_8M_UR50D, 8 million parameters) so it runs quickly on a standard CPU.
-
-Open weights - "Weights" are the millions of learned numbers inside a trained model, the actual result of its training process. "Open weights" means these numbers are freely downloadable by anyone, with no application or approval process, as opposed to models only accessible through a paid API or after a review process. This matters for a training module meant to run in anyone's Colab session without setup friction.
-
-Multi-head attention: this is the mechanism inside models like ESM2 that lets the model weigh how much every position in a sequence should influence its understanding of every other position, computed several times in parallel ("heads"), each potentially focusing on a different kind of relationship. Extracting and interpreting it directly is possible but heavier to compute and set up than what we need here.
-
-Checkpoints - ESM2 is released as several **checkpoints**, a checkpoint is one specific, saved, trained version of a model, ready to be loaded and used as-is, as opposed to an abstract model architecture. ESM2's checkpoints range from 8 million to 15 billion parameters, all trained the same way and sharing the same interface. This lets a module like this one use the smallest checkpoint for speed on a free Colab CPU, while anyone wanting more accuracy can swap in a larger ESM2 checkpoint without changing any other code.
-
-Embedding — a list of numbers produced by a model to represent something (a protein, a word, an image) in a way that captures its meaningful properties. Similar proteins tend to have similar embeddings. The specific number of values in an embedding (its "dimension") is fixed by the model's architecture — ESM2's smallest checkpoint produces 320-number embeddings; larger ESM2 checkpoints produce wider embeddings (up to 2,560 for the largest).
-
-Fine-tuning — starting from an already-trained model (like ESM2, pre-trained on millions of unlabeled protein sequences) and adapting it, or training something on top of it, using a smaller labeled dataset for a specific task. Different from training a model from scratch.
-
-Zero-shot prediction — using a pre-trained model's existing knowledge directly, without any task-specific labeled training data. Contrasted with fine-tuning, which does use labeled data.
-
-Classifier — a model that assigns inputs to one of a fixed set of categories (here: "exercise-responsive" or "not"). This notebook uses two: logistic regression (simple, linear) and a small neural network (MLP, more flexible).
-
 AUROC (Area Under the ROC Curve) — a standard score for how well a classifier ranks true positives above true negatives, across every possible decision threshold. 0.5 = no better than random guessing; 1.0 = perfect separation.
+
+BLOSUM62 — a standard scoring table used during sequence alignment, indicating how "similar" different amino acid substitutions are (e.g. two chemically similar amino acids score higher than two very different ones).
+
+Canonical transcript — the single, representative version of a gene's transcript chosen as its "main" or default form, when a gene has multiple alternative transcripts. Ensembl's canonical protein ID is what's used for coordinate mapping in Part 4.
+
+CFDE (Common Fund Data Ecosystem) — an NIH initiative connecting data generated across separate NIH Common Fund research programs, each run by its own Data Coordinating Center (DCC), so researchers can ask questions that span multiple programs' data.
 
 Checkpoint (in the notebook) — a point in the notebook where learners are asked to pause, interpret their own output, and answer a question before continuing. Not to be confused with a model checkpoint (a saved, trained version of a model — e.g. esm2_t6_8M_UR50D is one such checkpoint).
 
-eQTL (expression quantitative trait locus) — a genomic position where a DNA variant is statistically associated with the expression level of a nearby (or sometimes distant) gene. One of the main tools researchers use to interpret what non-coding genetic variants might functionally do.
+Checkpoints - ESM2 is released as several **checkpoints**, a checkpoint is one specific, saved, trained version of a model, ready to be loaded and used as-is, as opposed to an abstract model architecture. ESM2's checkpoints range from 8 million to 15 billion parameters, all trained the same way and sharing the same interface. This lets a module like this one use the smallest checkpoint for speed on a free Colab CPU, while anyone wanting more accuracy can swap in a larger ESM2 checkpoint without changing any other code.
 
-GENCODE ID — a standardized, versioned identifier for a gene (e.g. ENSG00000134243.11), used by GTEx and Ensembl. Required by GTEx's API for eQTL lookups — a plain gene name like "SORT1" is not sufficient.
+Classifier — a model that assigns inputs to one of a fixed set of categories (here: "exercise-responsive" or "not"). This notebook uses two: logistic regression (simple, linear) and a small neural network (MLP, more flexible).
+
+Data Coordinating Center (DCC) — the organization responsible for collecting, curating, and distributing data for one NIH Common Fund program. MoTrPAC and GTEx are each run by their own DCC.
+
+Differential analysis (DA) — a statistical comparison of measurements (expression, protein abundance, etc.) between two conditions (e.g. exercise-trained vs. sedentary), producing a significance value and an effect size for each gene.
+
+Embedding — a list of numbers produced by a model to represent something (a protein, a word, an image) in a way that captures its meaningful properties. Similar proteins tend to have similar embeddings. The specific number of values in an embedding (its "dimension") is fixed by the model's architecture — ESM2's smallest checkpoint produces 320-number embeddings; larger ESM2 checkpoints produce wider embeddings (up to 2,560 for the largest).
 
 Ensembl — a public genomics database providing gene, transcript, and protein structure information, including tools to convert between protein positions and genomic (chromosome) coordinates — used in Part 4 to map ESM2's sequence positions to real genomic locations.
 
-Canonical transcript — the single, representative version of a gene's transcript chosen as its "main" or default form, when a gene has multiple alternative transcripts. Ensembl's canonical protein ID is what's used for coordinate mapping in Part 4.
+eQTL (expression quantitative trait locus) — a genomic position where a DNA variant is statistically associated with the expression level of a nearby (or sometimes distant) gene. One of the main tools researchers use to interpret what non-coding genetic variants might functionally do.
+
+ESM2 — the specific protein language model used in this notebook (Evolutionary Scale Modeling, version 2), developed by Meta AI. Available in several sizes; this notebook uses the smallest (esm2_t6_8M_UR50D, 8 million parameters) so it runs quickly on a standard CPU.
+
+Fine-tuning — starting from an already-trained model (like ESM2, pre-trained on millions of unlabeled protein sequences) and adapting it, or training something on top of it, using a smaller labeled dataset for a specific task. Different from training a model from scratch.
+
+GENCODE ID — a standardized, versioned identifier for a gene (e.g. ENSG00000134243.11), used by GTEx and Ensembl. Required by GTEx's API for eQTL lookups — a plain gene name like "SORT1" is not sufficient.
+
+Log fold-change (logFC) — the size and direction of a change between two conditions, on a logarithmic scale. Positive = increased in the trained group; negative = decreased. This notebook uses the absolute value of logFC to define "responsive," since both increases and decreases count as a response.
+
+Multi-head attention: this is the mechanism inside models like ESM2 that lets the model weigh how much every position in a sequence should influence its understanding of every other position, computed several times in parallel ("heads"), each potentially focusing on a different kind of relationship. Extracting and interpreting it directly is possible but heavier to compute and set up than what we need here.
+
+Open weights - "Weights" are the millions of learned numbers inside a trained model, the actual result of its training process. "Open weights" means these numbers are freely downloadable by anyone, with no application or approval process, as opposed to models only accessible through a paid API or after a review process. This matters for a training module meant to run in anyone's Colab session without setup friction.
+
+Ortholog — a gene in one species that evolved from the same ancestral gene as a gene in another species, and typically performs the same or a very similar function. Used here to translate rat genes to their human equivalents, since GTEx only has human data.
+
+p-value — the probability of seeing a result at least this extreme purely by chance, if there were truly no real effect. Lower = more statistically confident the effect is real.
+
+Protein language model — a machine learning model trained on large numbers of protein sequences to predict masked amino acids from context, the same way text language models predict masked words. In doing so, it implicitly learns which amino acid substitutions are typically tolerated at each position.
+
+Proteomics — measurement of protein abundance, typically via mass spectrometry. Tells you how much of the actual protein product is present. RNA and protein levels don't always move together (see "Known limitations" above).
+
+Residue — a single amino acid unit within a protein sequence; "residue position 50" means the 50th amino acid in the sequence.
 
 Reviewed vs. unreviewed (UniProt) — "reviewed" (Swiss-Prot) entries in UniProt are manually curated and high-confidence; "unreviewed" (TrEMBL) entries are automatically predicted and lower-confidence. Rat proteome coverage in the reviewed tier is much sparser than human's, which is why this notebook's UniProt sequence retrieval doesn't succeed for every gene.
 
 Sequence alignment — lining up two sequences (here, a rat and a human version of the same protein) to identify which positions correspond to each other, accounting for the fact that the two sequences may not be exactly the same length due to evolutionary insertions or deletions.
 
-BLOSUM62 — a standard scoring table used during sequence alignment, indicating how "similar" different amino acid substitutions are (e.g. two chemically similar amino acids score higher than two very different ones).
+Transcriptomics — measurement of RNA (gene expression) transcript/read levels, typically via RNA sequencing, a proxy of how much a gene is "turned on".
 
-Residue — a single amino acid unit within a protein sequence; "residue position 50" means the 50th amino acid in the sequence.
+Zero-shot prediction — using a pre-trained model's existing knowledge directly, without any task-specific labeled training data. Contrasted with fine-tuning, which does use labeled data.
 
 ---
 ## References and Further Reading
@@ -173,7 +178,8 @@ Residue — a single amino acid unit within a protein sequence; "residue positio
 
 ```
 .
-├── From_Sequence_to_Variant_PLMs_on_CFDE_Data_UPDATED.ipynb   # the training module notebook
+├── From_Sequence_to_Variant_PLMs_on_CFDE_Data.ipynb           # the training module notebook
+├── chapters/                                                   # chapter-by-chapter notebook version
 ├── workflow_narrative.md                                       # narrative summary (markdown version)
 ├── workflow_narrative.pdf                                      # narrative summary (PDF version)
 └── README.md                                                   # this file
